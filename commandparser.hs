@@ -21,8 +21,7 @@ remainingCells =
     (char ' ' >> cells)            -- Found space?  More cells coming
     <|> (return [])                -- No space?  Return [], no more cells
 
--- Each cell contains 0 or more characters, which must not be a space or
--- EOL
+-- Each cell contains 0 or more characters, which must not be a space
 cellContent :: GenParser Char st String
 cellContent = 
     many (noneOf " ")
