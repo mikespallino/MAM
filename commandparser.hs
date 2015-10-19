@@ -1,4 +1,6 @@
 import Text.ParserCombinators.Parsec
+import Data.Typeable
+import qualified Data.Map as Map
 
 -- Each line contains 1 or more cells, separated by a space
 line :: GenParser Char st [String]
@@ -28,3 +30,24 @@ cellContent =
 
 parseText :: String -> Either ParseError [String]
 parseText input = parse line "(unknown)" input
+
+-- HERE BE GAME STUFFS
+
+-- Valid Command data structure set
+data ValidCommand = Look | Take | Use | Move | Talk | INVALID deriving (Show)
+
+-- Take a string and return a Valid Command
+verifyCommand :: String -> ValidCommand
+verifyCommand cmd = do
+    case cmd of
+        "look" -> Look
+        "take" -> Take
+        "use"  -> Use
+        "move" -> Move
+        "talk" -> Talk
+        _      -> INVALID
+
+-- Parse user input and verify the first element is a valid command.
+getCommand :: String -> ValidCommand
+getCommand str = do
+    verifyCommand (either (\_ -> "invalid") (head) (parseText str))
