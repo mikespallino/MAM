@@ -34,7 +34,7 @@ parseText input = parse line "(unknown)" input
 -- HERE BE GAME STUFFS
 
 -- Valid Command data structure set
-data ValidCommand = Look | Take | Use | Move | Talk | INVALID deriving (Show)
+data ValidCommand = Look | Take | Use | Move | Talk | INVALID_COMMAND deriving (Show)
 
 -- Take a string and return a Valid Command
 verifyCommand :: String -> ValidCommand
@@ -45,9 +45,10 @@ verifyCommand cmd = do
         "use"  -> Use
         "move" -> Move
         "talk" -> Talk
-        _      -> INVALID
+        _      -> INVALID_COMMAND
 
 -- Parse user input and verify the first element is a valid command.
 getCommand :: String -> ValidCommand
 getCommand str = do
     verifyCommand (either (\_ -> "invalid") (head) (parseText str))
+
