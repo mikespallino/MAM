@@ -41,6 +41,11 @@ parseText input = parse line "(unknown)" input
 -- HERE BE GAME STUFFS
 --
 
+data Player = Player {
+    location :: String,
+    inventory :: [String]
+} deriving (Show)
+
 -- Valid Command data structure set
 data ValidCommand = Look | Take | Use | Move | Talk | INVALID_COMMAND deriving (Show)
 
