@@ -54,18 +54,20 @@ data PlayerCommand = PlayerCommand {
 } deriving (Show)
 
 -- Valid Command data structure set
-data ValidCommand = Look | Take | Use | Move | Talk | INVALID_COMMAND deriving (Show)
+data ValidCommand = Look | Take | Use | Move | Talk | Items | Inventory | INVALID_COMMAND deriving (Show)
 
 -- Take a string and return a Valid Command
 verifyCommand :: String -> ValidCommand
 verifyCommand cmd = do
     case cmd of
-        "look" -> Look
-        "take" -> Take
-        "use"  -> Use
-        "move" -> Move
-        "talk" -> Talk
-        _      -> INVALID_COMMAND
+        "look"      -> Look
+        "take"      -> Take
+        "use"       -> Use
+        "move"      -> Move
+        "talk"      -> Talk
+        "items"     -> Items
+        "inventory" -> Inventory
+        _           -> INVALID_COMMAND
 
 -- Parse user input and verify the first element is a valid command.
 getCommand :: PlayerCommand -> PlayerCommand
@@ -91,7 +93,8 @@ getCommand plyCmd = do
                     (PlayerCommand (Player (concat params) (inventory (player plyCmd))) (concat params) ("Moved to " ++ concat params))
                 else
                     (PlayerCommand (player plyCmd) (inputStr plyCmd) ("Invalid location provided."))
-        Talk -> plyCmd
+        Items -> (PlayerCommand (player plyCmd) (inputStr plyCmd) (Data.List.intercalate ", " (fromJust (Map.lookup curloc items))))
+        Inventory -> (PlayerCommand (player plyCmd) (inputStr plyCmd) (Data.List.intercalate ", " (inventory (player plyCmd))))
         INVALID_COMMAND -> (PlayerCommand (player plyCmd) (inputStr plyCmd) ("Invalid command provided."))
 
 
@@ -102,3 +105,20 @@ locations = Map.fromList [("HeinsVille", Map.fromList [("NuclearReactor", "What 
                           ("Saltropolis", Map.fromList[("Cobbler's main office", "There ain't even a window.")])]
 
 items = Map.fromList [("HeinsVille", ["food", "dog"])]
+
+
+play p1 plyCmd = do
+    let resCmd = getCommand plyCmd
+    putStrLn (result resCmd)
+    putStr "-> "
+    theCommand <- getLine
+    let newCmd = PlayerCommand (player resCmd) (theCommand) (result resCmd)
+    play p1 newCmd
+
+main = do
+    putStrLn "\nWelcome to Metallic Atomic Mayo!\n\nValid Commands:\n\n\tlook <LOCATION>\n\ttake <ITEM_NAME>\n\tuse <ITEM_NAME>\n\tmove <LOCATION>\n\titems\n\tinventory\n\nHave fun!"
+    putStr "-> "
+    theCommand <- getLine
+    let p1 = Player "HeinsVille" ["note"]
+    let plyCmd = PlayerCommand p1 theCommand ""
+    play p1 plyCmd
