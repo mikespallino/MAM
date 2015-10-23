@@ -2,6 +2,7 @@ import Text.ParserCombinators.Parsec
 import Data.Typeable
 import Data.List
 import qualified Data.Map as Map
+import Data.Maybe
 
 
 --
@@ -46,6 +47,12 @@ data Player = Player {
     inventory :: [String]
 } deriving (Show)
 
+data PlayerCommand = PlayerCommand {
+    player :: Player,
+    inputStr :: String,
+    result :: String
+} deriving (Show)
+
 -- Valid Command data structure set
 data ValidCommand = Look | Take | Use | Move | Talk | INVALID_COMMAND deriving (Show)
 
@@ -61,25 +68,37 @@ verifyCommand cmd = do
         _      -> INVALID_COMMAND
 
 -- Parse user input and verify the first element is a valid command.
-getCommand :: String -> Maybe String
-getCommand str = do
-    let input = parseText str
+getCommand :: PlayerCommand -> PlayerCommand
+getCommand plyCmd = do
+    -- parse out player input string
+    let input = parseText (inputStr plyCmd)
+    -- get the command from the first word of input
     let cmd = verifyCommand (either (\_ -> "invalid") (head) (input))
+    -- grab the rest of the command
     let params = either (\_ -> ["invalid"]) (tail) (input)
+    -- store the location of the player
+    let curloc = location (player plyCmd)
+    -- get valid places to look at from player's location
+    let validLookables = fromJust (Map.lookup curloc locations)
+    -- get valid items to take from player's location
+    let validTakables = fromJust (Map.lookup curloc items)
     case cmd of
-        Look -> if Map.member (concat params) locations then Map.lookup (concat params) locations else Just "The Metallic Atomic Mayo universe doesn't have that place." 
-        Take -> Just "TAKEN."
-        Use  -> Just "USED."
-        Move -> Just "MOVED."
-        Talk -> Just "TALKED."
-        INVALID_COMMAND -> Just "Invalid input provided."
+        -- return the item description if it exists
+        Look -> if Map.member (concat params) validLookables then (PlayerCommand (player plyCmd) (inputStr plyCmd) (fromJust (Map.lookup (concat params) validLookables))) else (PlayerCommand (player plyCmd) (inputStr plyCmd) (curloc ++ " doesn't have that place.")) 
+        Take -> if elem (concat params) (fromJust (Map.lookup curloc items)) then (PlayerCommand (Player (location (player plyCmd)) (inventory (player plyCmd) ++ [concat(params)])) (inputStr plyCmd) ("Took " ++ (concat params) ++ ".")) else (PlayerCommand (player plyCmd) (inputStr plyCmd) ("You can't take that."))
+        Use  ->  plyCmd
+        Move -> if Map.member (concat params) locations then
+                    (PlayerCommand (Player (concat params) (inventory (player plyCmd))) (concat params) ("Moved to " ++ concat params))
+                else
+                    (PlayerCommand (player plyCmd) (inputStr plyCmd) ("Invalid location provided."))
+        Talk -> plyCmd
+        INVALID_COMMAND -> (PlayerCommand (player plyCmd) (inputStr plyCmd) ("Invalid command provided."))
 
-locations = Map.fromList [("HeinsVille", "Main city, oddly resembles a ketchup bottle..."), 
-                          ("NuclearReactor", "What do you think a nuclear reactor looks like?"),
-                          ("BigMacBay", "A heart attack waiting to happen."),
-                          ("HiddenValley","Yes like the dressing, idiot."),
-                          ("DillCity", "The pickle came from here."), 
-                          ("CBSHeadquarters", "TV news station. Left of mayo affiliation."),
-                          ("Saltropolis", "Who doesn't love salt?"),
-                          ("Cobbler's main office", "There ain't even a window."),
-                          ("Sugaria", "I have no idea what this place is for yet.")]
+
+locations = Map.fromList [("HeinsVille", Map.fromList [("NuclearReactor", "What do you think a nuclear reactor looks like?"),
+                                                        ("BigMacBay", "A heart attack waiting to happen."),
+                                                        ("HiddenValley","Yes like the dressing, idiot.")]),
+                          ("DillCity",  Map.fromList[("CBSHeadquarters", "TV news station. Left of mayo affiliation.")]),
+                          ("Saltropolis", Map.fromList[("Cobbler's main office", "There ain't even a window.")])]
+
+items = Map.fromList [("HeinsVille", ["food", "dog"])]
