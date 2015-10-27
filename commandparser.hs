@@ -108,7 +108,7 @@ locations = Map.fromList [("HeinsVille", Map.fromList [("NuclearReactor", "What 
 
 items = Map.fromList [("HeinsVille", ["food", "dog"])]
 
-helpStr = "\nValid Commands:\n\tlook <LOCATION>\n\ttake <ITEM_NAME>\n\tuse <ITEM_NAME>\n\tmove <LOCATION>\n\titems\n\tinventory\n\thelp"
+helpStr = "\nValid Commands:\n\n\tlook <LOCATION>\t\t(Look at a location)\n\ttake <ITEM_NAME>\t(Take an item in your location)\n\tuse <ITEM_NAME>\t\t(Use an item in your inventory)\n\tmove <LOCATION>\t\t(Move to a new location)\n\titems\t\t\t(List the items in your location)\n\tinventory\t\t(List the items in your inventory)\n\thelp\t\t\t(Show this message)\n"
 
 
 play p1 plyCmd = do
@@ -120,7 +120,7 @@ play p1 plyCmd = do
     play p1 newCmd
 
 main = do
-    putStrLn "Valid Commands:\n\tlook <LOCATION>\n\ttake <ITEM_NAME>\n\tuse <ITEM_NAME>\n\tmove <LOCATION>\n\titems\n\tinventory\n\t\t\tCBS NEWS: **MAYO STOLEN!**\n\t\"Sandman, who works at the Nuclear Reactor here in HeinsVille, had his   famous Metallic Atomic Mayo stolen! For those unaware, Sandman eats a sandwhich everyday at work and recently he knocked his jar of mayo into the reactor       creating Metallic Atomic Mayo!\n\tBecause Metallic Atomic Mayo doesn't decay, this became a very lucrative business. Sandman made millions off of his expiration date free product. For   obvious reasons he had to be protective of this amazing mayonnaise. Alas, his   protection contracted from the Secret Service was not enough. The mayo was      stolen by the most notorious villain in HeinsVille, Rueben.\"\n\nYou are a Private Investigator hired to find the MAM. You've been living in     HeinsVille for the last 5 years and have been very good friends with Sandman    since you moved here and that is why he contacted you.\n\nYou MUST find that MAYO. If you forget the commands, type \"help\"."
+    putStrLn "Welcome to Metallic Atomic Mayo!\n\n\n\t\t\tCBS NEWS: **MAYO STOLEN!**\n\n\t\"Sandman, who works at the Nuclear Reactor here in HeinsVille, had his   famous Metallic Atomic Mayo stolen! For those unaware, Sandman eats a sandwhich everyday at work and recently he knocked his jar of mayo into the reactor       creating Metallic Atomic Mayo!\n\tBecause Metallic Atomic Mayo doesn't decay, this became a very lucrative business. Sandman made millions off of his expiration date free product. For   obvious reasons he had to be protective of this amazing mayonnaise. Alas, his   protection contracted from the Secret Service was not enough. The mayo was      stolen by the most notorious villain in HeinsVille, Rueben.\"\n\n\nYou are a Private Investigator hired to find the MAM. You've been living in     HeinsVille for the last 5 years and have been very good friends with Sandman    since you moved here and that is why he contacted you.\n\nYou MUST find that MAYO.\n\nFor a list of commands, type \"help\"."
     putStr "-> "
     theCommand <- getLine
     let p1 = Player "HeinsVille" ["note"]
