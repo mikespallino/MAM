@@ -89,12 +89,12 @@ getCommand plyCmd = do
     let validTakables = fromJust (Map.lookup curloc items)
     case cmd of
         -- return the item description if it exists
-        Look -> if Map.member (concat params) validLookables then (PlayerCommand (player plyCmd) (inputStr plyCmd) (fromJust (Map.lookup (concat params) validLookables))) else (PlayerCommand (player plyCmd) (inputStr plyCmd) (curloc ++ " doesn't have that place.")) 
+        Look -> if Map.member (Data.List.intercalate " " params) validLookables then (PlayerCommand (player plyCmd) (inputStr plyCmd) (fromJust (Map.lookup (Data.List.intercalate " " params) validLookables))) else (PlayerCommand (player plyCmd) (inputStr plyCmd) (curloc ++ " doesn't have that place.")) 
         LookAround -> (PlayerCommand (player plyCmd) (inputStr plyCmd) (Data.List.intercalate ", " (Map.keys validLookables)))
-        Take -> if elem (concat params) (fromJust (Map.lookup curloc items)) then (PlayerCommand (Player (location (player plyCmd)) (inventory (player plyCmd) ++ [concat(params)])) (inputStr plyCmd) ("Took " ++ (concat params) ++ ".")) else (PlayerCommand (player plyCmd) (inputStr plyCmd) ("You can't take that."))
+        Take -> if elem (Data.List.intercalate " " params) (fromJust (Map.lookup curloc items)) then (PlayerCommand (Player (location (player plyCmd)) (inventory (player plyCmd) ++ [(Data.List.intercalate " "(params))])) (inputStr plyCmd) ("Took " ++ (Data.List.intercalate " " params) ++ ".")) else (PlayerCommand (player plyCmd) (inputStr plyCmd) ("You can't take that."))
         Use  ->  plyCmd
-        Move -> if Map.member (concat params) locations then
-                    (PlayerCommand (Player (concat params) (inventory (player plyCmd))) (concat params) ("Moved to " ++ concat params))
+        Move -> if Map.member (Data.List.intercalate " " params) locations then
+                    (PlayerCommand (Player (Data.List.intercalate " " params) (inventory (player plyCmd))) (Data.List.intercalate " " params) ("Moved to " ++ (Data.List.intercalate " " params)))
                 else
                     (PlayerCommand (player plyCmd) (inputStr plyCmd) ("Invalid location provided."))
         Items -> (PlayerCommand (player plyCmd) (inputStr plyCmd) (Data.List.intercalate ", " (fromJust (Map.lookup curloc items))))
@@ -104,13 +104,15 @@ getCommand plyCmd = do
         INVALID_COMMAND -> (PlayerCommand (player plyCmd) (inputStr plyCmd) ("Invalid command provided."))
 
 
-locations = Map.fromList [("HeinsVille", Map.fromList [("NuclearReactor", "What do you think a nuclear reactor looks like?"),
-                                                        ("BigMacBay", "A heart attack waiting to happen."),
-                                                        ("HiddenValley","Yes like the dressing, idiot.")]),
-                          ("DillCity",  Map.fromList[("CBSHeadquarters", "TV news station. Left of mayo affiliation.")]),
+locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "What do you think a nuclear reactor looks like?"),
+                                                        ("Big Mac Bay", "A heart attack waiting to happen."),
+                                                        ("Hidden Valley","Yes like the dressing, idiot.")]),
+                          ("Dill City",  Map.fromList[("CBS Headquarters", "TV news station. Left of mayo affiliation.")]),
                           ("Saltropolis", Map.fromList[("Cobbler's main office", "There ain't even a window.")])]
 
-items = Map.fromList [("HeinsVille", ["food", "dog"])]
+items = Map.fromList [("HeinsVille", ["food", "dog"]),
+                      ("Dill City", ["pickles", "paper"]),
+                      ("Saltropolis", ["grain of salt", "sandwhich"])]
 
 helpStr = "\nValid Commands:\n\n\tlook <LOCATION>\t\t(Look at a location)\n\tlookaround\t\t(List the locations in your area)\n\ttake <ITEM_NAME>\t(Take an item in your location)\n\tuse <ITEM_NAME>\t\t(Use an item in your inventory)\n\tmove <LOCATION>\t\t(Move to a new location)\n\titems\t\t\t(List the items in your location)\n\tinventory\t\t(List the items in your inventory)\n\thelp\t\t\t(Show this message)\n"
 
