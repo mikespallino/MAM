@@ -54,21 +54,23 @@ data PlayerCommand = PlayerCommand {
 } deriving (Show)
 
 -- Valid Command data structure set
-data ValidCommand = Look | Take | Use | Move | Talk | Items | Inventory | Help | INVALID_COMMAND deriving (Show)
+data ValidCommand = Look | LookAround | Take | Use | Move | Talk | Items | Inventory | Help | Exit | INVALID_COMMAND deriving (Show)
 
 -- Take a string and return a Valid Command
 verifyCommand :: String -> ValidCommand
 verifyCommand cmd = do
     case cmd of
-        "look"      -> Look
-        "take"      -> Take
-        "use"       -> Use
-        "move"      -> Move
-        "talk"      -> Talk
-        "items"     -> Items
-        "inventory" -> Inventory
-        "help"      -> Help
-        _           -> INVALID_COMMAND
+        "look"       -> Look
+        "lookaround" -> LookAround
+        "take"       -> Take
+        "use"        -> Use
+        "move"       -> Move
+        "talk"       -> Talk
+        "items"      -> Items
+        "inventory"  -> Inventory
+        "help"       -> Help
+        "exit"       -> Exit
+        _            -> INVALID_COMMAND
 
 -- Parse user input and verify the first element is a valid command.
 getCommand :: PlayerCommand -> PlayerCommand
@@ -88,6 +90,7 @@ getCommand plyCmd = do
     case cmd of
         -- return the item description if it exists
         Look -> if Map.member (concat params) validLookables then (PlayerCommand (player plyCmd) (inputStr plyCmd) (fromJust (Map.lookup (concat params) validLookables))) else (PlayerCommand (player plyCmd) (inputStr plyCmd) (curloc ++ " doesn't have that place.")) 
+        LookAround -> (PlayerCommand (player plyCmd) (inputStr plyCmd) (Data.List.intercalate ", " (Map.keys validLookables)))
         Take -> if elem (concat params) (fromJust (Map.lookup curloc items)) then (PlayerCommand (Player (location (player plyCmd)) (inventory (player plyCmd) ++ [concat(params)])) (inputStr plyCmd) ("Took " ++ (concat params) ++ ".")) else (PlayerCommand (player plyCmd) (inputStr plyCmd) ("You can't take that."))
         Use  ->  plyCmd
         Move -> if Map.member (concat params) locations then
@@ -97,6 +100,7 @@ getCommand plyCmd = do
         Items -> (PlayerCommand (player plyCmd) (inputStr plyCmd) (Data.List.intercalate ", " (fromJust (Map.lookup curloc items))))
         Inventory -> (PlayerCommand (player plyCmd) (inputStr plyCmd) (Data.List.intercalate ", " (inventory (player plyCmd))))
         Help -> (PlayerCommand (player plyCmd) (inputStr plyCmd) helpStr)
+        Exit -> (PlayerCommand (player plyCmd) (inputStr plyCmd) "Bye!")
         INVALID_COMMAND -> (PlayerCommand (player plyCmd) (inputStr plyCmd) ("Invalid command provided."))
 
 
@@ -108,7 +112,7 @@ locations = Map.fromList [("HeinsVille", Map.fromList [("NuclearReactor", "What 
 
 items = Map.fromList [("HeinsVille", ["food", "dog"])]
 
-helpStr = "\nValid Commands:\n\n\tlook <LOCATION>\t\t(Look at a location)\n\ttake <ITEM_NAME>\t(Take an item in your location)\n\tuse <ITEM_NAME>\t\t(Use an item in your inventory)\n\tmove <LOCATION>\t\t(Move to a new location)\n\titems\t\t\t(List the items in your location)\n\tinventory\t\t(List the items in your inventory)\n\thelp\t\t\t(Show this message)\n"
+helpStr = "\nValid Commands:\n\n\tlook <LOCATION>\t\t(Look at a location)\n\tlookaround\t\t(List the locations in your area)\n\ttake <ITEM_NAME>\t(Take an item in your location)\n\tuse <ITEM_NAME>\t\t(Use an item in your inventory)\n\tmove <LOCATION>\t\t(Move to a new location)\n\titems\t\t\t(List the items in your location)\n\tinventory\t\t(List the items in your inventory)\n\thelp\t\t\t(Show this message)\n"
 
 
 play p1 plyCmd = do
@@ -116,8 +120,7 @@ play p1 plyCmd = do
     putStrLn (result resCmd)
     putStr "-> "
     theCommand <- getLine
-    let newCmd = PlayerCommand (player resCmd) (theCommand) (result resCmd)
-    play p1 newCmd
+    if (theCommand /= "exit") then (play p1 (PlayerCommand (player resCmd) (theCommand) (result resCmd))) else putStrLn "\nBye!"
 
 main = do
     putStrLn "Welcome to Metallic Atomic Mayo!\n\n\n\t\t\tCBS NEWS: **MAYO STOLEN!**\n\n\t\"Sandman, who works at the Nuclear Reactor here in HeinsVille, had his   famous Metallic Atomic Mayo stolen! For those unaware, Sandman eats a sandwhich everyday at work and recently he knocked his jar of mayo into the reactor       creating Metallic Atomic Mayo!\n\tBecause Metallic Atomic Mayo doesn't decay, this became a very lucrative business. Sandman made millions off of his expiration date free product. For   obvious reasons he had to be protective of this amazing mayonnaise. Alas, his   protection contracted from the Secret Service was not enough. The mayo was      stolen by the most notorious villain in HeinsVille, Rueben.\"\n\n\nYou are a Private Investigator hired to find the MAM. You've been living in     HeinsVille for the last 5 years and have been very good friends with Sandman    since you moved here and that is why he contacted you.\n\nYou MUST find that MAYO.\n\nFor a list of commands, type \"help\"."
@@ -125,4 +128,4 @@ main = do
     theCommand <- getLine
     let p1 = Player "HeinsVille" ["note"]
     let plyCmd = PlayerCommand p1 theCommand ""
-    play p1 plyCmd
+    if (theCommand /= "exit") then (play p1 plyCmd) else putStrLn "\nBye!"
