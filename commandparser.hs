@@ -92,7 +92,7 @@ getCommand plyCmd = do
         Look -> if Map.member (Data.List.intercalate " " params) validLookables then (PlayerCommand (player plyCmd) (inputStr plyCmd) (fromJust (Map.lookup (Data.List.intercalate " " params) validLookables))) else (PlayerCommand (player plyCmd) (inputStr plyCmd) (curloc ++ " doesn't have that place.")) 
         LookAround -> (PlayerCommand (player plyCmd) (inputStr plyCmd) (Data.List.intercalate ", " (Map.keys validLookables)))
         Take -> if elem (Data.List.intercalate " " params) (fromJust (Map.lookup curloc items)) then (PlayerCommand (Player (location (player plyCmd)) (inventory (player plyCmd) ++ [(Data.List.intercalate " "(params))])) (inputStr plyCmd) ("Took " ++ (Data.List.intercalate " " params) ++ ".")) else (PlayerCommand (player plyCmd) (inputStr plyCmd) ("You can't take that."))
-        Use  ->  plyCmd
+        Use  -> if (elem (Data.List.intercalate " " params) (inventory (player plyCmd))) then (PlayerCommand (player plyCmd) (inputStr plyCmd) (useItem (Data.List.intercalate " " params))) else (PlayerCommand (player plyCmd) (inputStr plyCmd) ("You don't have " ++ (Data.List.intercalate " " params) ++ "."))
         Move -> if Map.member (Data.List.intercalate " " params) locations then
                     (PlayerCommand (Player (Data.List.intercalate " " params) (inventory (player plyCmd))) (Data.List.intercalate " " params) ("Moved to " ++ (Data.List.intercalate " " params)))
                 else
@@ -103,6 +103,18 @@ getCommand plyCmd = do
         Exit -> (PlayerCommand (player plyCmd) (inputStr plyCmd) "Bye!")
         INVALID_COMMAND -> (PlayerCommand (player plyCmd) (inputStr plyCmd) ("Invalid command provided."))
 
+useItem :: String -> String
+useItem item = do
+    case item of
+        "food" -> "Munch munch munch..."
+        "dog" -> "What are you trying to do?!"
+        "pickles" -> "These go great on sandwiches."
+        "paper" -> "You light it on fire. Opps, whatever it said is gone."
+        "grain of salt" -> "All of these twists and turns the universe took you to and you ended up here, trying to use a grain of salt. What does that mean?"
+        "sandwich" -> "Alas, the mayo is in another sandwhich."
+        "swiss cheese" -> "This came from the greasy belly of Reuben... You really want to use that?"
+        "letter" -> "Dear Cheesus,\n\tAlright I'll do it. Just make sure you destroy all the evidence including these letters. Reuben can never know we framed him and neither can anyone else.\n\tThey will definitely hire a PI for this, so be careful.\n\nYour Friend,\nCobbler."
+        "Reuben's sandwich" -> "Man, this is just a regular sandwhich..."
 
 locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "The Nuclear Reactor where Sandman works. The birth place of Metallic Atomic Mayo. It looks like there may be some footprints on the ground headed to the lunch room. Maybe you should take a look."),
                                                         ("Big Mac Bay", "It looks like there are a thousand islands out on the horizon."),
