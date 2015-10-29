@@ -104,15 +104,23 @@ getCommand plyCmd = do
         INVALID_COMMAND -> (PlayerCommand (player plyCmd) (inputStr plyCmd) ("Invalid command provided."))
 
 
-locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "What do you think a nuclear reactor looks like?"),
-                                                        ("Big Mac Bay", "A heart attack waiting to happen."),
-                                                        ("Hidden Valley","Yes like the dressing, idiot.")]),
-                          ("Dill City",  Map.fromList[("CBS Headquarters", "TV news station. Left of mayo affiliation.")]),
+locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "The Nuclear Reactor where Sandman works. The birth place of Metallic Atomic Mayo. It looks like there may be some footprints on the ground headed to the lunch room. Maybe you should take a look."),
+                                                        ("Big Mac Bay", "It looks like there are a thousand islands out on the horizon."),
+                                                        ("Hidden Valley","There is nothing of interest here.")]),
+                          ("Nuclear Reactor", Map.fromList [("Lunch Room", "This is where the mayo was stolen. The footprints head off to Sandmans office.  Sandman's turkey sandwich lays in a state of dissarray. It lacks structure      without the mayo. Who could do such a thing?"),
+                                                            ("Sandman's Office", "The footprints lead up to his locker. It looks like there is Swiss Cheese on the locker. This must be Reuben's handy work! He won't get away with it this time. He lives in a penthouse in Dill City if I remember correctly.")]),
+                          ("Dill City",  Map.fromList[("CBS Headquarters", "TV news station. Left of mayo affiliation."),
+                                                      ("Reuben's Penthouse", "For the leader of the crime syndicate in HeinsVille, this place seems pretty simple. Oh looks like the door is open!")]),
+                          ("Reuben's Penthouse", Map.fromList[("Kitchen", "Ugh, this place is a mess... How can people just leave dishes in the sink?"),
+                                                              ("Table", "A sandwhich? Could Reuben really be this stupid? And what is this piece of scrap paper?")]),
                           ("Saltropolis", Map.fromList[("Cobbler's main office", "There ain't even a window.")])]
 
 items = Map.fromList [("HeinsVille", ["food", "dog"]),
                       ("Dill City", ["pickles", "paper"]),
-                      ("Saltropolis", ["grain of salt", "sandwhich"])]
+                      ("Saltropolis", ["grain of salt", "sandwich"]),
+                      ("Hidden Valley", ["Metallic Atomic Mayo"]),
+                      ("Nuclear Reactor", ["swiss cheese"]),
+                      ("Reuben's Penthouse", ["letter", "Reuben's sandwich"])]
 
 helpStr = "\nValid Commands:\n\n\tlook <LOCATION>\t\t(Look at a location)\n\tlookaround\t\t(List the locations in your area)\n\ttake <ITEM_NAME>\t(Take an item in your location)\n\tuse <ITEM_NAME>\t\t(Use an item in your inventory)\n\tmove <LOCATION>\t\t(Move to a new location)\n\titems\t\t\t(List the items in your location)\n\tinventory\t\t(List the items in your inventory)\n\thelp\t\t\t(Show this message)\n"
 
@@ -122,7 +130,13 @@ play p1 plyCmd = do
     putStrLn (result resCmd)
     putStr "-> "
     theCommand <- getLine
-    if (theCommand /= "exit") then (play p1 (PlayerCommand (player resCmd) (theCommand) (result resCmd))) else putStrLn "\nBye!"
+    if (theCommand /= "exit") then 
+        if "Metallic Atomic Mayo" `elem` inventory (player resCmd) then
+            putStrLn "You solved the mystery, great work!"
+        else
+            (play p1 (PlayerCommand (player resCmd) (theCommand) (result resCmd))) 
+    else
+        putStrLn "\nBye!"
 
 main = do
     putStrLn "Welcome to Metallic Atomic Mayo!\n\n\n\t\t\tCBS NEWS: **MAYO STOLEN!**\n\n\t\"Sandman, who works at the Nuclear Reactor here in HeinsVille, had his   famous Metallic Atomic Mayo stolen! For those unaware, Sandman eats a sandwhich everyday at work and recently he knocked his jar of mayo into the reactor       creating Metallic Atomic Mayo!\n\tBecause Metallic Atomic Mayo doesn't decay, this became a very lucrative business. Sandman made millions off of his expiration date free product. For   obvious reasons he had to be protective of this amazing mayonnaise. Alas, his   protection contracted from the Secret Service was not enough. The mayo was      stolen by the most notorious villain in HeinsVille, Rueben.\"\n\n\nYou are a Private Investigator hired to find the MAM. You've been living in     HeinsVille for the last 5 years and have been very good friends with Sandman    since you moved here and that is why he contacted you.\n\nYou MUST find that MAYO.\n\nFor a list of commands, type \"help\"."
