@@ -113,27 +113,46 @@ useItem item = do
         "grain of salt" -> "All of these twists and turns the universe took you to and you ended up here, trying to use a grain of salt. What does that mean?"
         "sandwich" -> "Alas, the mayo is in another sandwhich."
         "swiss cheese" -> "This came from the greasy belly of Reuben... You really want to use that?"
-        "letter" -> "Dear Cheesus,\n\tAlright I'll do it. Just make sure you destroy all the evidence including these letters. Reuben can never know we framed him and neither can anyone else.\n\tThey will definitely hire a PI for this, so be careful.\n\nYour Friend,\nCobbler."
+        "letter" -> "\"Dear Cheesus,\n\tAlright I'll do it. Just make sure you destroy all the evidence including these letters. Reuben can never know we framed him and neither can anyone else. They will definitely hire a PI for this, so be careful.\n\nYour Friend,\nCobbler.\"\n\nHmmm this is weird... Maybe I should talk to Cobbler about this. He works for CBS news in Dill City."
         "Reuben's sandwich" -> "Man, this is just a regular sandwhich..."
+        "note" -> "It's dangerous to go alone, but I have nothing to give you. Sorry."
+        "empty mayo jar" -> "This is an empty jar of Metallic Atomic Mayo! This is incriminating evidence, but something seems cheesy about this..."
+        "button" -> "You die."
+        "map" -> "HeinsVille, Dill City, Saltropolis"
+        "a button" -> "Nothing happens.. Maybe you need more!"
+        "wallet" -> "Cheesus' wallet. He lives in Sugaria. I should go there."
+        "keys" -> "Cheesus's keys. They have cheese all over them."
+        "Casu Marzu" -> "Ew, maggots everywhere!"
+        "Cheeseboy Magazine" -> "How provocative!"
 
 locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "The Nuclear Reactor where Sandman works. The birth place of Metallic Atomic Mayo. It looks like there may be some footprints on the ground headed to the lunch room. Maybe you should take a look."),
                                                         ("Big Mac Bay", "It looks like there are a thousand islands out on the horizon."),
                                                         ("Hidden Valley","There is nothing of interest here.")]),
-                          ("Hidden Valley", Map.fromList [("The Abyss", "The void of nothingness.")]),
+                          ("Hidden Valley", Map.fromList [("The Abyss", "The void of nothingness. This void has a button though!")]),
+                          ("The Abyss", Map.fromList [("AJAR", "A note was attached to that button.")]),
                           ("Nuclear Reactor", Map.fromList [("Lunch Room", "This is where the mayo was stolen. The footprints head off to Sandmans office.  Sandman's turkey sandwich lays in a state of dissarray. It lacks structure      without the mayo. Who could do such a thing?"),
                                                             ("Sandman's Office", "The footprints lead up to his locker. It looks like there is Swiss Cheese on the locker. This must be Reuben's handy work! He won't get away with it this time. He lives in a penthouse in Dill City if I remember correctly.")]),
+                          ("Big Mac Bay", Map.fromList [("Cheesy Car","That car is driving really fast! Looks like he's trying to get somewhere pretty quick. He's driving down to Saltropolis."),
+                                                        ("Cheese Water", "Like Cheese Wiz, but with more liquid."),
+                                                        ("Cheese Wizard", "Maybe he will grant you a most cheesical wish."),
+                                                        ("Beach", "Lot's of Cheese heads here... What is this, Green Bay?")]),
                           ("Dill City",  Map.fromList[("CBS Headquarters", "TV news station. Left of mayo affiliation."),
                                                       ("Reuben's Penthouse", "For the leader of the crime syndicate in HeinsVille, this place seems pretty simple. Oh looks like the door is open!")]),
+                          ("CBS Headquarters", Map.fromList [("Cobbler's Office", "\"Alright Cobbler, What's going on with you and Cheesus?\n\n\"I have no idea what you're talking about! Leave me alone. Cheesus is in Big Mac Bay if you want to talk to him.\"")]),
                           ("Reuben's Penthouse", Map.fromList[("Kitchen", "Ugh, this place is a mess... How can people just leave dishes in the sink?"),
                                                               ("Table", "A sandwhich? Could Reuben really be this stupid? And what is this piece of scrap paper?")]),
-                          ("Saltropolis", Map.fromList[("Cobbler's main office", "There ain't even a window.")])]
+                          ("Saltropolis", Map.fromList[("Cobbler's House", "There ain't even a window, but the front door is open. Cheesus must have come here to talk to Cobbler.")]),
+                          ("Cobbler's House", Map.fromList [("table", "Theres a bunch of cheese on the table. Next to it is a wallet and a set of keys.")])]
 
 items = Map.fromList [("HeinsVille", ["food", "dog"]),
                       ("Dill City", ["pickles", "paper"]),
                       ("Saltropolis", ["grain of salt", "sandwich"]),
-                      ("Hidden Valley", ["Metallic Atomic Mayo"]),
+                      ("Hidden Valley", ["button"]),
+                      ("The Abyss", ["Metallic Atomic Mayo"])
                       ("Nuclear Reactor", ["swiss cheese"]),
-                      ("Reuben's Penthouse", ["letter", "Reuben's sandwich"])]
+                      ("Reuben's Penthouse", ["letter", "Reuben's sandwich", "empty mayo jar"]),
+                      ("Cobbler's House", ["Casu Marzu", "wallet", "keys", "Cheeseboy Magazine"]),
+                      ("CBS Headquarters", ["a button"])]
 
 helpStr = "\nValid Commands:\n\n\tlook <LOCATION>\t\t(Look at a location)\n\tlookaround\t\t(List the locations in your area)\n\ttake <ITEM_NAME>\t(Take an item in your location)\n\tuse <ITEM_NAME>\t\t(Use an item in your inventory)\n\tmove <LOCATION>\t\t(Move to a new location)\n\titems\t\t\t(List the items in your location)\n\tinventory\t\t(List the items in your inventory)\n\thelp\t\t\t(Show this message)\n"
 
@@ -147,7 +166,10 @@ play p1 plyCmd = do
         if "Metallic Atomic Mayo" `elem` inventory (player resCmd) then
             putStrLn "You solved the mystery, great work!"
         else
-            (play p1 (PlayerCommand (player resCmd) (theCommand) (result resCmd))) 
+            if "You die." == (result plyCmd) then
+                putStrLn "\n** BOOM **."
+            else
+                (play p1 (PlayerCommand (player resCmd) (theCommand) (result resCmd))) 
     else
         putStrLn "\nBye!"
 
@@ -155,6 +177,6 @@ main = do
     putStrLn "Welcome to Metallic Atomic Mayo!\n\n\n\t\t\tCBS NEWS: **MAYO STOLEN!**\n\n\t\"Sandman, who works at the Nuclear Reactor here in HeinsVille, had his   famous Metallic Atomic Mayo stolen! For those unaware, Sandman eats a sandwhich everyday at work and recently he knocked his jar of mayo into the reactor       creating Metallic Atomic Mayo!\n\tBecause Metallic Atomic Mayo doesn't decay, this became a very lucrative business. Sandman made millions off of his expiration date free product. For   obvious reasons he had to be protective of this amazing mayonnaise. Alas, his   protection contracted from the Secret Service was not enough. The mayo was      stolen by the most notorious villain in HeinsVille, Rueben.\"\n\n\nYou are a Private Investigator hired to find the MAM. You've been living in     HeinsVille for the last 5 years and have been very good friends with Sandman    since you moved here and that is why he contacted you.\n\nYou MUST find that MAYO.\n\nFor a list of commands, type \"help\"."
     putStr "-> "
     theCommand <- getLine
-    let p1 = Player "HeinsVille" ["note"]
+    let p1 = Player "HeinsVille" ["map","note"]
     let plyCmd = PlayerCommand p1 theCommand ""
     if (theCommand /= "exit") then (play p1 plyCmd) else putStrLn "\nBye!"
