@@ -117,8 +117,8 @@ useItem item = do
         "Reuben's sandwich" -> "Man, this is just a regular sandwhich..."
         "note" -> "It's dangerous to go alone, but I have nothing to give you. Sorry."
         "empty mayo jar" -> "This is an empty jar of Metallic Atomic Mayo! This is incriminating evidence, but something seems cheesy about this..."
-        "button" -> "You die."
-        "map" -> "HeinsVille, Dill City, Saltropolis"
+        "button" -> "Click."
+        "map" -> "HeinsVille, Dill City, Saltropolis, Sugaria"
         "a button" -> "Nothing happens.. Maybe you need more!"
         "wallet" -> "Cheesus' wallet. He lives in Sugaria. I should go there."
         "keys" -> "Cheesus's keys. They have cheese all over them."
@@ -126,6 +126,7 @@ useItem item = do
         "Cheeseboy Magazine" -> "How provocative!"
         "chewed gum" -> "Looks like it still has flavor"
         "toilet paper" -> "Doesn't seem like the right thing to do in public"
+        "Pumpernickel button" -> "Bread! Just like Jelly Kid!"
 
 locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "The Nuclear Reactor where Sandman works. The birth place of Metallic Atomic Mayo. It looks like there may be some footprints on the ground headed to the lunch room. Maybe you should take a look."),
                                                         ("Big Mac Bay", "It looks like there are a thousand islands out on the horizon."),
@@ -150,7 +151,7 @@ locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "The 
                                                               ("Swings", "...Just your average swings")]),
                           ("Camp Sauerkraut", Map.fromList[("Fire Pit","Ashes and a dying fire"),
                                                             ("Tent", "Maybe you Shouldn't look at what is going on in there....")]),
-                          ("The Abyss", Map.fromList [("AJAR", "A note was attached to that button.")]),
+                          ("The Abyss", Map.fromList [("The Button God", "Weary traveler, have you found all the buttons? Use them all for a great gift of knowledge.")]),
                           ("Nuclear Reactor", Map.fromList [("Lunch Room", "This is where the mayo was stolen. The footprints head off to Sandmans office.  Sandman's turkey sandwich lays in a state of dissarray. It lacks structure      without the mayo. Who could do such a thing?"),
                                                             ("Sandman's Office", "The footprints lead up to his locker. It looks like there is Swiss Cheese on the locker. This must be Reuben's handy work! He won't get away with it this time. He lives in a penthouse in Dill City if I remember correctly.")]),
                           ("Big Mac Bay", Map.fromList [("Cheesy Car","That car is driving really fast! Looks like he's trying to get somewhere pretty quick. He's driving down to Saltropolis."),
@@ -162,6 +163,10 @@ locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "The 
                           ("CBS Headquarters", Map.fromList [("Cobbler's Office", "\"Alright Cobbler, What's going on with you and Cheesus?\n\n\"I have no idea what you're talking about! Leave me alone. Cheesus is in Big Mac Bay if you want to talk to him.\"")]),
                           ("Reuben's Penthouse", Map.fromList[("Kitchen", "Ugh, this place is a mess... How can people just leave dishes in the sink?"),
                                                               ("Table", "A sandwhich? Could Reuben really be this stupid? And what is this piece of scrap paper?")]),
+                          ("Sugaria", Map.fromList [("House of Cheesus", "I have to go talk to Cheesus about this mayo."),
+                                                    ("Church", "Church of Cheesus. Huh, seems kind of preachy...")]),
+                          ("House of Cheesus", Map.fromList [("Cheesus", "Crap... I give up. Me and Cobbler planted the evidence on Reuben. The mayo is in Hidden Valley. Hey is that a button??"),
+                                                            ("Button", "A button that could be pressed but it appears to be stuck.")]),
                           ("Saltropolis", Map.fromList[("Cobbler's House", "There ain't even a window, but the front door is open. Cheesus must have come here to talk to Cobbler.")]),
                           ("Cobbler's House", Map.fromList [("table", "Theres a bunch of cheese on the table. Next to it is a wallet and a set of keys.")])]
 items = Map.fromList [("HeinsVille", ["food", "dog"]),
@@ -174,7 +179,17 @@ items = Map.fromList [("HeinsVille", ["food", "dog"]),
                       ("Cobbler's House", ["Casu Marzu", "wallet", "keys", "Cheeseboy Magazine"]),
                       ("CBS Headquarters", ["a button"]),
                       ("Bathroom", ["toilet paper"]),
-                      ("Pumpernickel Park",["chewed gum"])]
+                      ("Pumpernickel Park",["chewed gum"]),
+                      ("House of Cheesus", []),
+                      ("Camp Sauerkraut", []),
+                      ("Pumpernickel Park", ["Pumpernickel button"]),
+                      ("Compost Canyon", []),
+                      ("Bathroom", []),
+                      ("Food Court", []),
+                      ("Mustard Mall", []),
+                      ("Falafal Falls", []),
+                      ("Loaf Landing", []),
+                      ("Pita Palace", [])]
 
 helpStr = "\nValid Commands:\n\n\tlook <LOCATION>\t\t(Look at a location)\n\tlookaround\t\t(List the locations in your area)\n\ttake <ITEM_NAME>\t(Take an item in your location)\n\tuse <ITEM_NAME>\t\t(Use an item in your inventory)\n\tmove <LOCATION>\t\t(Move to a new location)\n\titems\t\t\t(List the items in your location)\n\tinventory\t\t(List the items in your inventory)\n\thelp\t\t\t(Show this message)\n"
 
@@ -184,12 +199,12 @@ play p1 plyCmd = do
     putStrLn (result resCmd)
     putStr "-> "
     theCommand <- getLine
-    if (theCommand /= "exit") then 
-        if "Metallic Atomic Mayo" `elem` inventory (player resCmd) then
-            putStrLn "You solved the mystery, great work!"
-        else
-            if "You die." == (result plyCmd) then
+    if (theCommand /= "exit") then
+        if "Click." == (result plyCmd) then
                 putStrLn "\n** BOOM **."
+        else
+            if "Metallic Atomic Mayo" `elem` inventory (player resCmd) then
+              putStrLn "You solved the mystery, great work!"
             else
                 (play p1 (PlayerCommand (player resCmd) (theCommand) (result resCmd))) 
     else
