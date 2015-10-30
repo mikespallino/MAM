@@ -110,13 +110,13 @@ useItem item = do
         "dog" -> "What are you trying to do?!"
         "pickles" -> "These go great on sandwiches."
         "paper" -> "You light it on fire. Opps, whatever it said is gone."
-        "grain of salt" -> "All of these twists and turns the universe took you to and you ended up here, trying to use a grain of salt. What does that mean?"
+        "grain of salt" -> "All of these twists and turns the universe took you on and you ended up here,   trying to use a grain of salt. What does that mean?"
         "sandwich" -> "Alas, the mayo is in another sandwhich."
         "swiss cheese" -> "This came from the greasy belly of Reuben... You really want to use that?"
-        "letter" -> "\"Dear Cheesus,\n\tAlright I'll do it. Just make sure you destroy all the evidence including these letters. Reuben can never know we framed him and neither can anyone else. They will definitely hire a PI for this, so be careful.\n\nYour Friend,\nCobbler.\"\n\nHmmm this is weird... Maybe I should talk to Cobbler about this. He works for CBS news in Dill City."
+        "letter" -> "\"Dear Cheesus,\n\tAlright I'll do it. Just make sure you destroy all the evidence         including these letters. Reuben can never know we framed him and neither can    anyone else. They will definitely hire a PI for this, so be careful.\n\nYour Friend,\nCobbler.\"\n\nHmmm this is weird... Maybe I should talk to Cobbler about this. He works for   CBS news in Dill City."
         "Reuben's sandwich" -> "Man, this is just a regular sandwhich..."
         "note" -> "It's dangerous to go alone, but I have nothing to give you. Sorry."
-        "empty mayo jar" -> "This is an empty jar of Metallic Atomic Mayo! This is incriminating evidence, but something seems cheesy about this..."
+        "empty mayo jar" -> "This is an empty jar of Metallic Atomic Mayo! This is incriminating evidence,   but something seems cheesy about this..."
         "button" -> "Click."
         "map" -> "HeinsVille, Dill City, Saltropolis, Sugaria"
         "a button" -> "Nothing happens.. Maybe you need more!"
@@ -126,9 +126,9 @@ useItem item = do
         "Cheeseboy Magazine" -> "How provocative!"
         "chewed gum" -> "Looks like it still has flavor"
         "toilet paper" -> "Doesn't seem like the right thing to do in public"
-        "Pumpernickel button" -> "Bread! Just like Jelly Kid!"
+        "smelly button" -> "This smells so bad. You press it anyway. Nothing happends. Maybe if you had     more?"
 
-locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "The Nuclear Reactor where Sandman works. The birth place of Metallic Atomic Mayo. It looks like there may be some footprints on the ground headed to the lunch room. Maybe you should take a look."),
+locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "The Nuclear Reactor where Sandman works. The birth place of Metallic Atomic Mayo. It looks like there may be some footprints on the ground headed to the lunch  room. Maybe you should take a look."),
                                                         ("Big Mac Bay", "It looks like there are a thousand islands out on the horizon."),
                                                         ("Hidden Valley","There is nothing of interest here."),
                                                         ("Pita Palace","whoaaa, fancy"),
@@ -159,7 +159,7 @@ locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "The 
                                                         ("Cheese Wizard", "Maybe he will grant you a most cheesical wish."),
                                                         ("Beach", "Lot's of Cheese heads here... What is this, Green Bay?")]),
                           ("Dill City",  Map.fromList[("CBS Headquarters", "TV news station. Left of mayo affiliation."),
-                                                      ("Reuben's Penthouse", "For the leader of the crime syndicate in HeinsVille, this place seems pretty simple. Oh looks like the door is open!")]),
+                                                      ("Reuben's Penthouse", "For the leader of the crime syndicate in HeinsVille, this place seems pretty    simple. Oh looks like the door is open!")]),
                           ("CBS Headquarters", Map.fromList [("Cobbler's Office", "\"Alright Cobbler, What's going on with you and Cheesus?\n\n\"I have no idea what you're talking about! Leave me alone. Cheesus is in Big Mac Bay if you want to talk to him.\"")]),
                           ("Reuben's Penthouse", Map.fromList[("Kitchen", "Ugh, this place is a mess... How can people just leave dishes in the sink?"),
                                                               ("Table", "A sandwhich? Could Reuben really be this stupid? And what is this piece of scrap paper?")]),
@@ -167,7 +167,7 @@ locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "The 
                                                     ("Church", "Church of Cheesus. Huh, seems kind of preachy...")]),
                           ("House of Cheesus", Map.fromList [("Cheesus", "Crap... I give up. Me and Cobbler planted the evidence on Reuben. The mayo is in Hidden Valley. Hey is that a button??"),
                                                             ("Button", "A button that could be pressed but it appears to be stuck.")]),
-                          ("Saltropolis", Map.fromList[("Cobbler's House", "There ain't even a window, but the front door is open. Cheesus must have come here to talk to Cobbler.")]),
+                          ("Saltropolis", Map.fromList[("Cobbler's House", "There ain't even a window, but the front door is open. Cheesus must have come   here to talk to Cobbler.")]),
                           ("Cobbler's House", Map.fromList [("table", "Theres a bunch of cheese on the table. Next to it is a wallet and a set of keys.")])]
 items = Map.fromList [("HeinsVille", ["food", "dog"]),
                       ("Dill City", ["pickles", "paper"]),
@@ -182,8 +182,7 @@ items = Map.fromList [("HeinsVille", ["food", "dog"]),
                       ("Pumpernickel Park",["chewed gum"]),
                       ("House of Cheesus", []),
                       ("Camp Sauerkraut", []),
-                      ("Pumpernickel Park", ["Pumpernickel button"]),
-                      ("Compost Canyon", []),
+                      ("Compost Canyon", ["smelly button"]),
                       ("Bathroom", []),
                       ("Food Court", []),
                       ("Mustard Mall", []),
@@ -201,7 +200,7 @@ play p1 plyCmd = do
     theCommand <- getLine
     if (theCommand /= "exit") then
         if "Click." == (result plyCmd) then
-                putStrLn "\n** BOOM **."
+                putStrLn "\n** BOOM **. You died."
         else
             if "Metallic Atomic Mayo" `elem` inventory (player resCmd) then
               putStrLn "You solved the mystery, great work!"
