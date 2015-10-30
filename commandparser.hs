@@ -124,6 +124,8 @@ useItem item = do
         "keys" -> "Cheesus's keys. They have cheese all over them."
         "Casu Marzu" -> "Ew, maggots everywhere!"
         "Cheeseboy Magazine" -> "How provocative!"
+        "chewed gum" -> "Looks like it still has flavor"
+        "toilet paper" -> "Doesn't seem like the right thing to do in public"
 
 locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "The Nuclear Reactor where Sandman works. The birth place of Metallic Atomic Mayo. It looks like there may be some footprints on the ground headed to the lunch room. Maybe you should take a look."),
                                                         ("Big Mac Bay", "It looks like there are a thousand islands out on the horizon."),
@@ -141,8 +143,13 @@ locations = Map.fromList [("HeinsVille", Map.fromList [("Nuclear Reactor", "The 
                           ("Falafal Falls", Map.fromList[("Big Rock","Obviously this is the bigger rock"),
                                                          ("Little Rock","Obviously this is the smaller rock")]),
                           ("Mustard Mall", Map.fromList[("Food Court","What better place to look for Mayonnaise?")]),
-                          ("Food Court", Map.fromList[("Bathroom", "Why would you look in here?)")]),
+                          ("Food Court", Map.fromList[("Bathroom", "Why would you look in here?")]),
                           ("Bathroom", Map.fromList[]),
+                          ("Compost Canyon", Map.fromList[("Cliff","You see the pile of forgotten sandwiches")]),
+                          ("Pumpernickel Park", Map.fromList[("Slide","...Just an average slide"),
+                                                              ("Swings", "...Just your average swings")]),
+                          ("Camp Sauerkraut", Map.fromList[("Fire Pit","Ashes and a dying fire"),
+                                                            ("Tent", "Maybe you Shouldn't look at what is going on in there....")]),
                           ("The Abyss", Map.fromList [("AJAR", "A note was attached to that button.")]),
                           ("Nuclear Reactor", Map.fromList [("Lunch Room", "This is where the mayo was stolen. The footprints head off to Sandmans office.  Sandman's turkey sandwich lays in a state of dissarray. It lacks structure      without the mayo. Who could do such a thing?"),
                                                             ("Sandman's Office", "The footprints lead up to his locker. It looks like there is Swiss Cheese on the locker. This must be Reuben's handy work! He won't get away with it this time. He lives in a penthouse in Dill City if I remember correctly.")]),
@@ -165,7 +172,9 @@ items = Map.fromList [("HeinsVille", ["food", "dog"]),
                       ("Nuclear Reactor", ["swiss cheese"]),
                       ("Reuben's Penthouse", ["letter", "Reuben's sandwich", "empty mayo jar"]),
                       ("Cobbler's House", ["Casu Marzu", "wallet", "keys", "Cheeseboy Magazine"]),
-                      ("CBS Headquarters", ["a button"])]
+                      ("CBS Headquarters", ["a button"]),
+                      ("Bathroom", ["toilet paper"]),
+                      ("Pumpernickel Park",["chewed gum"])]
 
 helpStr = "\nValid Commands:\n\n\tlook <LOCATION>\t\t(Look at a location)\n\tlookaround\t\t(List the locations in your area)\n\ttake <ITEM_NAME>\t(Take an item in your location)\n\tuse <ITEM_NAME>\t\t(Use an item in your inventory)\n\tmove <LOCATION>\t\t(Move to a new location)\n\titems\t\t\t(List the items in your location)\n\tinventory\t\t(List the items in your inventory)\n\thelp\t\t\t(Show this message)\n"
 
